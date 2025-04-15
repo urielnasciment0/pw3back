@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-
+app.use(express.urlencoded({ extended: true }));
 //app.unsubscribe(express.urlencoded({extended:true}));
-
+app.use(express.json());
 
 app.get('/',(req,res)=>{
     res.send('olá mundo, nov dsadso');
@@ -14,7 +14,8 @@ app.post('/',(req,res)=>{
     res.send('olá mundo, post');
 });
 
-app.use(express.json());
+
+
 app.post('/login',(req,res)=>{
 
     const {user, password} = req.body;
