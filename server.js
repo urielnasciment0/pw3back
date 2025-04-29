@@ -41,9 +41,23 @@ app.post('/user/save',(req,res)=>{
 
 app.post("/user/add", async(req,res)=>{
     const {name, email} = req.body;
+
+    if (!name || !email){
+        return res.status(401).json({error:'name e password são obrigatorios!!'})
+    }
     const usuario = new User({name,email});
-    const salvar = await usuario.save();
-    return res.status(200).json(salvar)
+    const user = await User.findOne({
+        where:{
+            email:email
+        }
+    });
+    if (user)
+    {
+        return res.status(402).json({msg:"usuário já existe"})
+    } else {
+        const salvar = await usuario.save();
+        return res.status(200).json(salvar)
+    }
    }
 )
 

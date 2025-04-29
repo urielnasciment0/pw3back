@@ -15,10 +15,6 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
-    },
-    age: {
-        type: DataTypes.INTEGER,
-        allowNull: true
     }
 }, {
     timestamps: true // Cria campos createdAt e updatedAt automaticamente
