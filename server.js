@@ -33,19 +33,54 @@ app.post('/login',(req,res)=>{
 
 });
 
-app.post('/user/save',(req,res)=>{
+app.put('/user/save/:id',async (req,res)=>{
     const {name, email} = req.body;
-    const user = {name, email};
-    return res.status(200).json(user)
+    const userBD = await User.findByPk(req.params.id);
+    if (userBD){
+        if (name){
+            userBD.name = name;
+        }
+
+        if (email){
+            userBD.email = email;
+        }
+        await userBD.save();
+       return res.status(200).json(userBD);
+    } else{
+
+        return res.status(404).json({msg:"Usuário nao encontrado"})
+    }
+});
+
+app.delete("/user/delete/:id",async(req,res)=>{
+     const user = await User.findByPk(req.params.id);
+     if (user){
+        user.destroy();
+        return res.status(202).json({msg:"Usuário excluido com sucesso!!"}); 
+     }else{
+        return res.status(404).json({msg:"Usuário não encontrado"});   
+     }
+});
+
+app.get("/user/get/:id", async(req,res)=>{
+
+    const user = await User.findByPk(req.params.id);
+
+    if (user){
+        return res.status(200).json(user);
+    }else{
+        return res.status(404).json({msg:"Usuário não encontrado"});   
+    }
+
 })
 
 app.post("/user/add", async(req,res)=>{
-    const {name, email} = req.body;
+    const {name, email, password} = req.body;
 
-    if (!name || !email){
-        return res.status(401).json({error:'name e password são obrigatorios!!'})
+    if (!name || !email || !password){
+        return res.status(401).json({error:'name, email, e password são obrigatorios!!'})
     }
-    const usuario = new User({name,email});
+    const usuario = new User({name,email, password});
     const user = await User.findOne({
         where:{
             email:email
