@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('./models/User');
+const Product = require('./models/Produtos');
 const app = express();
 const port = 3000;
 
@@ -32,7 +33,7 @@ app.post('/login',(req,res)=>{
     }
 
 });
-
+//#region  Usuário
 app.put('/user/save/:id',async (req,res)=>{
     const {name, email} = req.body;
     const userBD = await User.findByPk(req.params.id);
@@ -101,7 +102,37 @@ app.get("/user/all", async (req,res)=>{
     return res.status(200).json(users)
 });
 
+//#endregion
 
+//#region Produtos
+app.get("/product/all", async (req,res)=>{
+    const users = await Product.findAll();
+    return res.status(200).json(users)
+});
+
+app.post("/product/add", async(req,res)=>{
+    const {name, price, barCode} = req.body;
+
+    if (!name || !price || !barCode ){
+        return res.status(401).json({error:'name, barCode e price são obrigatorios!!'})
+    }
+    const usuario = new Product({barCode,name,price});
+    const user = await Product.findOne({
+        where:{
+            barCode:barCode
+        }
+    });
+    if (user)
+    {
+        return res.status(402).json({msg:"Produto já existe"})
+    } else {
+        const salvar = await usuario.save();
+        return res.status(200).json(salvar)
+    }
+   }
+)
+
+//#endregion
 app.listen(port,()=>{
     console.log(`servidor rodando na porta ${port}`)
 })
