@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/',(req,res)=>{
-    res.send('olá mundo, nov dsadso');
+    res.send('olá de novo, mundo!');
 });
 
 app.post('/',(req,res)=>{
