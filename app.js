@@ -11,7 +11,6 @@ app.use(express.json());
 app.use('/api/', userRoutes);
 
 
-
 // Sincronizar modelos e iniciar servidor
 const PORT = process.env.PORT || 3000;
 sequelize.sync().then(() => {
