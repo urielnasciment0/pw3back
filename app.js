@@ -3,12 +3,21 @@ const userRoutes = require('./routes/userRoutes');
 const sequelize = require('./config/database');
 
 const app = express();
+const cors = require('cors');
+//configurar cors
+app.use(cors({
+    origin: '*', // Permitir todas as origens
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'] // Cabeçalhos permitidos
+}));
+
 
 // Middleware para parsear JSON
 app.use(express.json());
 
 // Rotas
 app.use('/api/', userRoutes);
+
 
 
 // Sincronizar modelos e iniciar servidor
