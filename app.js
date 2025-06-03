@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./routes/userRoutes');
 const sequelize = require('./config/database');
+const tipoProdutoRoutes = require('./routes/tipoProdutoRoutes')
 
 const app = express();
 const cors = require('cors');
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Rotas
 app.use('/api/', userRoutes);
+app.use('/api/', tipoProdutoRoutes);
 
 
 
