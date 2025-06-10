@@ -1,8 +1,34 @@
 const { where } = require('sequelize')
 const User = require('../models/User')
 const Sequelize = require('sequelize')
+const jwt = require("jsonwebtoken")
+require('dotenv').config()
+const SECRET = process.env.SECRET; 
 
 module.exports = class UserController {
+
+    static async login(req, res){
+        const {user, password}  = req.body;
+
+        const userBD = await User.findOne({where:{email:user}})
+        if (!userBD){
+            return res.status(404).json({msg:"usuário não encontrado"})    
+        }
+
+        if (userBD.password != password){
+            return res.status(401).json({msg:"senha inválda"})    
+        }
+        //console.log(SECRET);
+        jwt.sign({id:userBD.id},SECRET,{expiresIn:300}, (err,token)=>{
+            if (err){
+                return res.status(500).json({error:err.message})
+            }
+            return res.status(200).json({msg:"logado com suceso!",token:token})
+        })
+
+        
+        
+    }
 
      static async List(req, res, next) {
 
@@ -11,7 +37,7 @@ module.exports = class UserController {
     }
 
     static  async create(req,res, next){
-        const { name, email, age } = req.body
+        const { name, email, password } = req.body
         if (!name) {
             res.status(422).json({ message: 'o nome é obrigatório' })
             return
@@ -31,7 +57,7 @@ module.exports = class UserController {
         const user = new User({
             name,
             email,
-            age,
+            password,
         })
         try {
             const save = await user.save()
@@ -81,7 +107,7 @@ module.exports = class UserController {
     }
     
     static  async update(req,res, next){
-        const { name, email, age } = req.body
+        const { name, email, password } = req.body
         const { id } = req.params
         if (!id) {
             res.status(422).json({ message: 'o id é obrigatório' })
@@ -105,7 +131,7 @@ module.exports = class UserController {
         
        userExist.name = name
        userExist.email = email
-       userExist.age = age
+       userExist.password = password
 
         try {
             const save = await userExist.save()
